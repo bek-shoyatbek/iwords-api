@@ -21,9 +21,9 @@ export class UsersController {
   @UseFilters(PrismaClientExceptionFilter)
   async getUsers(
     @Query('order', new ParseIntPipe({ optional: true })) order?: number,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
   ) {
-    console.log(order);
-    return this.usersService.getUsers(order);
+    return this.usersService.getUsers(order, limit);
   }
 
   @Get('/:id')

@@ -46,10 +46,6 @@ export class UsersController {
       throw new BadRequestException('Email cannot be changed');
     }
 
-    if (updateUserDto.coins) {
-      throw new BadRequestException('Coins cannot be changed');
-    }
-
     return this.usersService.updateUser(id, updateUserDto);
   }
 }

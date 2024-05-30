@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { ObjectId } from 'mongodb';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
@@ -32,10 +33,21 @@ export class UsersService {
   }
 
   async updateUser(id: string, updateUserDto: Prisma.UserUpdateInput) {
+    if (!ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid user id');
+    }
+
+    if (updateUserDto.coins && (updateUserDto.coins as number) < 0) {
+      throw new BadRequestException('Coins cannot be negative');
+    }
+
     return this.prisma.user.update({
       where: { id },
       data: {
         ...updateUserDto,
+        coins: {
+          increment: updateUserDto.coins as number,
+        },
       },
     });
   }

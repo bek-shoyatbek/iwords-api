@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 
@@ -32,16 +32,10 @@ export class UsersService {
   }
 
   async updateUser(id: string, updateUserDto: Prisma.UserUpdateInput) {
-    const coins = (updateUserDto?.coins as number) || 0;
-    if (coins && coins < 0) {
-      throw new BadRequestException('Coins cannot be less than 0');
-    }
-
     return this.prisma.user.update({
       where: { id },
       data: {
         ...updateUserDto,
-        coins: { increment: coins },
       },
     });
   }

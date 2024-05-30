@@ -12,6 +12,7 @@ import {
 import { UsersService } from './users.service';
 import { Prisma } from '@prisma/client';
 import { PrismaClientExceptionFilter } from 'src/prisma-client-exception/prisma-client-exception.filter';
+import { ObjectId } from 'mongodb';
 
 @Controller('users')
 export class UsersController {
@@ -38,8 +39,15 @@ export class UsersController {
     @Param('id') id: string,
     @Body() updateUserDto: Prisma.UserUpdateInput,
   ) {
+    if (!ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid user id');
+    }
     if (updateUserDto.email) {
       throw new BadRequestException('Email cannot be changed');
+    }
+
+    if (updateUserDto.coins) {
+      throw new BadRequestException('Coins cannot be changed');
     }
 
     return this.usersService.updateUser(id, updateUserDto);
